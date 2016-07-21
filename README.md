@@ -4,6 +4,7 @@ xDoTool is awesome.  Except for, y'know, having to spell out special characters
 0.  Changelog:
   
   Version 1.1 7th July 2016
+
     * Renamed to better_xdotool.py because xdotool_plus doesn't feel right
     * Terminal colors!  That's right, no more walls of white text (mostly).
     * Basics of exception handling.  KeyboardInterrupt events should be nice and clean,
@@ -11,7 +12,8 @@ xDoTool is awesome.  Except for, y'know, having to spell out special characters
     * Text formatting is much cleaner than it was before.
     * Speaking of cleanup, it should exit cleanly now instead of crashing out with an Interrupt
   
-Version 1.0 6th July 2016
+  Version 1.0 6th July 2016
+
     * The thing works, mostly.  Still a lot of cleanup to do in the code and make it nicer
       but it works
 
