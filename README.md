@@ -20,7 +20,8 @@ xDoTool is awesome.  Except for, y'know, having to spell out special characters
 I.  What is this thing?
   
   It's a front-end for the old xdotool utility for,
-  among other things, sending keystrokes to an open remote x11 session
+  among other things, sending keystrokes to an open remote x11 session.
+  
   In fact, that's all it does at the moment.  Maybe the ability to use other functions of
   xdotool will be implemented in the future, but this was created to solve a specific problem.
 
