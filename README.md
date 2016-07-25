@@ -3,6 +3,11 @@ xDoTool is awesome.  Except for, y'know, having to spell out special characters
 
 0.  Changelog:
   
+  Version 1.1.1 25th July 2016
+
+    * Made the code much more pythonic and easier to read (except for line 135)
+    * Replaced the logic to check whether we have a valid window with a CalledProcessError check - much cleaner
+    
   Version 1.1 7th July 2016
 
     * Renamed to better_xdotool.py because xdotool_plus doesn't feel right
