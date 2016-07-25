@@ -189,8 +189,12 @@ def send(window, command):
     # via xdotool
 
     # First, find out if we have what we need on the system we're running on
-    success = check_requirements()
-
+    try:
+        check_requirements()
+    except MissingDependencyError:
+        print(colored("One or more dependencies unsatisfied."
+                      "Exiting.", "red"))
+        sys.exit(1)
     # Then build the shell command
     cmd =  "key --window " + window + " " + command
 
@@ -202,12 +206,10 @@ def send(window, command):
 
 def check_requirements():
     # Do we have xdotool installed?
-    path = (os.system("which ponysaye"))
+    path = (os.system("which xdotool"))
 
-    if len(str(path)) > 5:
-        print(colored("Sorry, xdotool package not found.  Please install it"
-                      " and run this tool again.\nExiting...", "red"))
-        sys.exit(0)
+    if len(str(path)) < 5:
+        raise MissingDependencyError
 
     # maybe? assert(len(str(path)) <= 5, "Sorry, xdotool package not found."
     # "  Please install it and run this tool again.")
