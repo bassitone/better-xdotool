@@ -1,5 +1,5 @@
 #!/usr/bin/python3.5
-import subprocess
+from subprocess import run,check_output,CalledProcessError
 import os
 import sys
 import re
@@ -12,57 +12,98 @@ def main():
     try:
             # Intro and disclaim.
 
-            # TODO: learn how Rapid7 makes those sick Metasploit ASCII banners
+            # TODO: learn how Rapid7 makes those sick 
+            #       Metasploit ASCII banners
 
             print("xdotool, now without annoying syntax.")
             print((colored("It's better.\n", 'green')))
             print("Originally by Charles Herrera (@bassitone)\n")
             print("GPL v3, Code is as-is, etc. etc.")
-            print("You should have already identified an accessible x11 server somehow.\n")
-            print(colored("######################################################", "red"))
-            print(colored("\nOnly use this tool when specifically given permission.\n", "yellow", attrs=["bold", "underline"]))
-            print(colored("With great power comes great responsibility.\n", "white", attrs=["bold","underline"]))
-            print(colored("######################################################", "red"))
+            print("You should have already identified an accessible"
+                  " x11 server somehow.\n")
+            print(colored("########################################"
+                          "##############", "red"))
+            print(colored("\nOnly use this tool when specifically"
+                          " given permission.\n", "yellow",
+                          attrs=["bold", "underline"]))
+            print(colored("With great power comes great responsibility.\n",                           "white", attrs=["bold","underline"]))
+            print(colored("################################################"
+                          "######", "red"))
 
             control = ""
-            transmit = "" # What we're ultimately going to send.  Only set after successful user verification
+            transmit = "" # What we're ultimately going to send.  
+                          # Only set after successful user verification
             check = "" # another loop control variable that we'll use
-            window = "" # our window ID.  We may want to save it across commands.
+            window = "" # our window ID.  
+                        # We may want to save it across commands.
 
-            # Enclose command entry logic in a loop.  We might want to send multiple commands, for example.
+            # Enclose command entry logic in a loop.  
+            # We might want to send multiple commands, for example.
 
-            # If we have done this before, ask if we'd like to use the same window
-            # TODO: move window stuff to a separate method for purposes of elegance.
-            # Requires making this thing into a class with window as a global variable
+            # If we have done this before, ask if we'd like 
+            # to use the same window
+            # TODO: move window stuff to a separate method for 
+            #       purposes of elegance.
+            # Requires making this thing into a class with window as 
+            # a global variable
+
             while control != "x":
                 if len(window) > 0:
-                    again = input("Would you like to send to the same window as your previous command?  Type y or n:\n  Alternatively, you can enter x to quit the program\n")
+                    again = input("Would you like to send to"
+                            " the same window"
+                            "as your previous command?  Type y or n:\n"
+                            "Alternatively, you can enter x to quit"
+                            " the program\n")
                     if again[0] == "y":
                         cmd = "key --window " + window + " " + command
                         subprocess.run("xdotool " + cmd, shell = True)
                     elif again[0] == "x":
                         close(again[0])
                 else:
-                    print("First, we need the ID of the window you will be sending commands to.  This is probably a terminal on the remote system, but it can be anything")
-                    print(colored("Unfortunately, picking your window ID requires a bit of guesswork - I can't do it for you", "yellow"))
-                    print("     If you don't know your window ID, please run xwininfo in another terminal.\n     Consult its manpage for any necessary parameters")
+                    print("First, we need the ID of the window you will be"
+                          " sending commands to.\nThis is probably"
+                          " a terminal on the remote system,"
+                          " but it can be anything")
+                    print(colored("Unfortunately, picking your window ID"
+                                  " requires a bit of guesswork -\n"
+                                  " I can't do it for you", "yellow"))
+                    print("If you don't know your window ID,"
+                          " please run xwininfo in another terminal.\n"
+                          "Consult its manpage for "
+                          "any necessary parameters")
 
-                window = input("What is the ID of the window you would like to send commands to?\nEither 0x***** form or an integer is fine\nOtherwise, enter x to quit\n")
+                window = input("What is the ID of the window you would like"
+                               " to send commands to?\n"
+                               "Either 0x***** form or an integer is fine\n"
+                               "Otherwise, enter x to quit\n")
                 if window[0] == "x":
                     close(window[0])
                 # Prompt for command to send.
-                print(colored("Now I'll ask for the command you would like to send.\n","white",attrs=["underline"]))
-                print("Normal syntax is fine --we'll handle the conversion.\n")
-                print(colored("If you need a special key (shift, ctrl, alt, etc.), type it as written here.\n\n", "green"))
-                print(colored("Alternatively, type 'x' to exit the program.\n", "yellow"))
-                print(colored("NOTE: Ctrl+C and similar sequences may not work correctly due to limitations in X11 - BE CAREFUL!", "red"))
-                command = input(colored("What command would you like to send to the remote shell?\n\n", "white", attrs=["bold", "underline"]))
+                print(colored("Now I'll ask for the command you would like "
+                              "to send.\n","white",attrs=["underline"]))
+                print("Normal syntax is fine --"
+                      " we'll handle the conversion.\n")
+                print(colored("If you need a special key (shift, ctrl, alt,"
+                              "etc.), type it as written here.\n\n",
+                              "green"))
+                print(colored("Alternatively, type 'x' to exit "
+                              "the program.\n", "yellow"))
+                print(colored("NOTE: Ctrl+C and similar sequences may not"
+                              " work correctly\n"
+                              "      due to limitations in X11 -"
+                              "BE CAREFUL!", "red"))
+                command = input(colored("What command would you like "
+                                        "to send to the remote shell?\n\n"
+                                        , "white",
+                                        attrs=["bold", "underline"]))
                 # Trigger the exit method.  We verify it below
                 if command == 'x':
                     close(command)
 
                 # ask for confirmation.  Shell safely y"all!
-                verify = input("Great, you'd like to send '" + command + "'?  Type y or n, or x to exit\n\n")
+                verify = input("Great, you'd like to send '"
+                                + command + "'?  Type y or n,"
+                                " or x to exit\n\n")
 
                 # correction loop in case we made an error.
 
@@ -70,8 +111,11 @@ def main():
                     cmd = prepare(command)
                     transmission = convert_to_x(cmd)
                     send(window, transmission)
-                    print(colored("Command sent.  Please check for your results or any errors.", "green"))
-                    repeat = input("\n\nWould you like to send another command?  Type y or n\n\n")
+                    print(colored("Command sent.  Please check "
+                                  "for your results or any errors.",
+                                  "green"))
+                    repeat = input("\n\nWould you like to send another "
+                                   "command?  Type y or n\n\n")
                     if repeat[0] =="n":
                         close("x")
                 elif verify[0] == "x":
@@ -81,21 +125,22 @@ def main():
         sys.exit(-1)
 def convert_to_x(s):
 
-    # Take the input strimg and convert it to "x-speak" in order to interface with xdotool
+    # Take the input strimg and convert it to "x-speak" 
+    # in order to interface with xdotool
 
     # To Hell with it, use string.replace.
-    # It"s not pretty, but should get the job done.
+    # It"s not pretty or very pythonic, but should get the job done.
     # We"ll validate later.
 
     the_string = s.replace(" ", "space").replace("!", "exclam").replace("\"", "quotedbl").replace("#", "numbersign").replace("$", "dollar").replace("%", "percent").replace("&", "ampersand").replace("(", "parenleft").replace(")", "parenright").replace("[", "bracketleft").replace("]", "bracketright").replace("*", "asterisk").replace("\\", "backslash").replace("=", "equal").replace("+", "plus").replace(",", "comma").replace("^", "asciicircum").replace("-", "minus").replace("_", "underscore").replace(".", "period").replace("/", "slash").replace(",", "colon").replace(";", "semicolon").replace("<", "less").replace(">", "greater").replace("?", "question").replace("{", "braceleft").replace("}", "braceright").replace("|", "bar").replace("ctrl", "ctrl").replace("alt", "alt").replace("del", "BackSpace").replace("backspace", "BackSpace").replace("Enter", "KP_Enter").replace("Return", "KP_Enter")
 
     final_string = the_string.replace("~", " ")
-
     return final_string
 
 def prepare(command_to_send):
 
-    # This method simply checks the command to be sent in "x-speak", allowing for syntax correction
+    # This method simply checks the command to be sent in "x-speak", 
+    # allowing for syntax correction
     # usually whitespace issues
 
     cmd = command_to_send
@@ -134,40 +179,52 @@ def prepare(command_to_send):
         output = output + to_insert + "~"
     my_output = output.strip()
     prepared_output = my_output.replace("e~n~t~e~r~", "Enter").replace("a~l~t~", "alt").replace("c~t~r~l~", "ctrl").replace("d~e~l~", "del")
+
     return prepared_output
 
 def send(window, command):
+    # This method builds and sends the command we want to process 
+    # via xdotool
 
-    # Pass command to xdotool
+    # First, find out if we have what we need on the system we're running on
     check_requirements()
 
-    # Build the shell command
+    # Then build the shell command
     cmd =  "key --window " + window + " " + command
 
-    subprocess.run("xdotool " + cmd, shell = True)
+    #Finally, run it.
+    run("xdotool " + cmd, shell = True)
 
-# Part of error handling/environment prep.  Should we try to install xdotool if we don't have it?
+# Part of error handling/environment prep.  
+# Should we try to install xdotool if we don't have it?
 
 def check_requirements():
     # Do we have xdotool installed?
     path = (os.system("which xdotool"))
 
     if len(str(path)) > 5:
-        print(colored("Sorry, xdotool package not found.  Please install it and run this tool again.\nExiting...", "red"))
+        print(colored("Sorry, xdotool package not found.  Please install it"
+                      " and run this tool again.\nExiting...", "red"))
         sys.exit(0)
 
     # Do we have a valid window to send commands to?
-    display = input("Almost ready.  Before I send the command, I'd like to make sure I can reach the remote window.\n\nWhat is its IP address and display number?\nThis would usually look something like 10.1.1.2:0\n\n")
-    msg = (subprocess.run("xdpyinfo -display " + display, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)) # debug
-    if str(msg).find("BadWindow"):
-        raise Exception("Unable to get window info. \n")
-        print("")
-        print(colored("Please check the IP:DISPLAY you have entered.\nOr perhaps you need to call 'export DISPLAY=' on your remote machine." "red"))
+    display = input("Almost ready.  Before I send the command, I'd like"
+            " to make sure I can reach the remote window.\n\nWhat is its IP"            " address and display number?\n"
+            " This would usually look something like 10.1.1.2:0\n\n")
+    try:
+        check_output("xdpyinfo -display " + display, shell=False)
+    except CalledProcessError:
+        print(colored("Please check the IP:DISPLAY you have entered.\n"
+                      "Or perhaps you need to call 'export DISPLAY=' "
+                      "on your remote machine.", "red"))
+
 
 def close(signal):
-    # We call this code in a few different spots, might as well make it a method
+    # We call this code in a few different spots
+    # might as well make it a method
     if signal == 'x':
-        check = input(colored("Are you sure you would like to quit?  Type y or n\n", "yellow", attrs=["bold"]))
+        check = input(colored("Are you sure you would like to quit?  "
+                              "Type y or n\n", "yellow", attrs=["bold"]))
         if check == 'y':
             print(colored("Goodbye.", "green"))
             sys.exit(0) # cleaner than break
