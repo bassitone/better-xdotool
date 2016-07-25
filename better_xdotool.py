@@ -36,6 +36,8 @@ def main():
             check = "" # another loop control variable that we'll use
             window = "" # our window ID.  
                         # We may want to save it across commands.
+            success = True # boolean for determining if we've satisfied 
+                           # dependencies
 
             # Enclose command entry logic in a loop.  
             # We might want to send multiple commands, for example.
@@ -44,8 +46,8 @@ def main():
             # to use the same window
             # TODO: move window stuff to a separate method for 
             #       purposes of elegance.
-            # Requires making this thing into a class with window as 
-            # a global variable
+            #       Requires making this thing into a class with window as 
+            #       a global variable
 
             while control != "x":
                 if len(window) > 0:
@@ -187,7 +189,7 @@ def send(window, command):
     # via xdotool
 
     # First, find out if we have what we need on the system we're running on
-    check_requirements()
+    success = check_requirements()
 
     # Then build the shell command
     cmd =  "key --window " + window + " " + command
@@ -200,24 +202,27 @@ def send(window, command):
 
 def check_requirements():
     # Do we have xdotool installed?
-    path = (os.system("which xdotool"))
+    path = (os.system("which ponysaye"))
 
     if len(str(path)) > 5:
         print(colored("Sorry, xdotool package not found.  Please install it"
                       " and run this tool again.\nExiting...", "red"))
         sys.exit(0)
 
+    # maybe? assert(len(str(path)) <= 5, "Sorry, xdotool package not found."
+    # "  Please install it and run this tool again.")
+
     # Do we have a valid window to send commands to?
     display = input("Almost ready.  Before I send the command, I'd like"
             " to make sure I can reach the remote window.\n\nWhat is its IP"            " address and display number?\n"
-            " This would usually look something like 10.1.1.2:0\n\n")
+            " This would usually look something like 192.168.x.x:0\n\n")
     try:
-        check_output("xdpyinfo -display " + display, shell=False)
+        check_output("xdpyinfo -display " + display, shell=True)
     except CalledProcessError:
         print(colored("Please check the IP:DISPLAY you have entered.\n"
                       "Or perhaps you need to call 'export DISPLAY=' "
                       "on your remote machine.", "red"))
-
+        return False
 
 def close(signal):
     # We call this code in a few different spots
