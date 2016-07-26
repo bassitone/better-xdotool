@@ -41,6 +41,7 @@ xDoTool is awesome.  Except for, y'know, having to spell out special characters
   xdotool will be implemented in the future, but this was created to solve a specific problem.
 
 **II. Why?**
+
   Using xdotool from your friendly neighborhood apt repository is all fine and it works,
   but guess what?  Spelling out symbols like $#@ & ^ is annoying!
   (What even *is* asciicircum anyway?)
@@ -51,10 +52,12 @@ xDoTool is awesome.  Except for, y'know, having to spell out special characters
     In short, it turns their terminal into *yours*.
 
 **III. What can I use this for?**
+
   ~~leet x11 hacking~~  Any time you'd want to send keystrokes to a remote x11 window.
   Where do you get one?  Sorry, can't help you there.  Don't do illegal or stupid things, kids.
 
 **IV.  Okay...what do I need to run it?  (Dependencies)**
+
   * Python 3.5, mostly.  Yes, 3.5.  There's a neat little function in there that I actually used.
       Maybe legacy support can come in the future.  It doesn't look too nasty (I hope)
   * xdotool is kind of important.
