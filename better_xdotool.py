@@ -4,10 +4,8 @@ import os
 import sys
 import re
 from termcolor import colored
-# TODO add exception handling
 # TODO add environment preparation code (export DISPLAY=<IP:DISPLAY>, maybe testing the connection itself)
-# TODO actually use the check_requirements() method for something
-# TODO suppress the command output in case of errors.
+# TODO add error logging?
 def main():
     try:
             # Intro and disclaim.
@@ -78,36 +76,40 @@ def main():
                                 " you would like to send commands to?\n"
                                 "Either 0x***** form or an integer "
                                 "is fine\nOtherwise, enter x to quit\n")
-                
-                try:
-                    if window[0] == "x":
-                        close(window[0])
-                    # Prompt for command to send.
-                    print(colored("Now I'll ask for the command you would like "
-                                  "to send.\n","white",attrs=["underline"]))
-                    print("Normal syntax is fine --"
-                          " we'll handle the conversion.\n")
-                    print(colored("If you need a special key (shift, ctrl, alt,"
-                                  "etc.), type it as written here.\n\n",
-                                  "green"))
-                    print(colored("Alternatively, type 'x' to exit "
-                                  "the program.\n", "yellow"))
-                    print(colored("NOTE: Ctrl+C and similar sequences may not"
-                                  " work correctly\n"
-                                  "      due to limitations in X11 -"
-                                  "BE CAREFUL!", "red"))
-                    command = input(colored("What command would you like "
-                                            "to send to the remote shell?\n\n"
-                                            , "white",
+                success = False
+                while (not success):
+                    try:
+                        if window[0] == "x":
+                            close(window[0])
+                        # Prompt for command to send.
+                        print(colored("Now I'll ask for the command "
+                                        "you would like to send.\n","white",
+                                         attrs=["underline"]))
+                        print("Normal syntax is fine --"
+                              " we'll handle the conversion.\n")
+                        print(colored("If you need a special key "
+                                        "(shift, ctrl, alt,"
+                                      "etc.), type it as written here.\n\n",
+                                      "green"))
+                        print(colored("Alternatively, type 'x' to exit "
+                                      "the program.\n", "yellow"))
+                        print(colored("NOTE: Ctrl+C and similar sequences "
+                                        "may not work correctly\n"
+                                        "      due to limitations in X11 -"
+                                        "BE CAREFUL!", "red"))
+                        command = input(colored("What command would "
+                                                "you like to send to the "
+                                                "remote shell?"
+                                                "\n\n", "white",
                                             attrs=["bold", "underline"]))
-                    # Trigger the exit method.  We verify it below
-                    if command == 'x':
-                        close(command)
-                except IndexError:
-                    print(colored("Sorry, I need a window ID", "red"))
-                    window = input("Please enter it either as an integer or"
-                                   "in 0x***** form")
-                                   
+                        success = True
+                        # Trigger the exit method.  We verify it below
+                        if command == 'x':
+                            close(command)
+                    except IndexError:
+                        print(colored("Sorry, I need a window ID", "red"))
+                        window = input("Please enter it either as "
+                                        "an integer or in 0x***** form")
                 # ask for confirmation.  Shell safely y"all!
                 verify = input("Great, you'd like to send '"
                                 + command + "'?  Type y or n,"
@@ -200,7 +202,7 @@ def send(window, command):
     except RuntimeError:
         print(colored("Sorry, I'm missing a dependency.\n"
                       "  Please install it and try again.", "red"))
-        sys.exit(1)
+        sys.exit(1) # Since we're missing a dependency, just exit.
     # Then build the shell command
     cmd =  "key --window " + window + " " + command
 
@@ -228,11 +230,11 @@ def check_requirements():
         print(colored("Please check the IP:DISPLAY you have entered.\n"
                       "Or perhaps you need to call 'export DISPLAY=' "
                       "on your remote machine.", "red"))
-        return False
 
 def close(signal):
     # We call this code in a few different spots
     # might as well make it a method
+    # To be used for clean exits (code 0) - errors should exit themselves
     if signal == 'x':
         check = input(colored("Are you sure you would like to quit?  "
                               "Type y or n\n", "yellow", attrs=["bold"]))
