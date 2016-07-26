@@ -36,7 +36,7 @@ def main():
                         # We may want to save it across commands.
             success = True # boolean for determining if we've satisfied 
                            # dependencies
-
+            trace = 0
             # Enclose command entry logic in a loop.  
             # We might want to send multiple commands, for example.
 
@@ -208,10 +208,10 @@ def send(window, command):
         print(colored("Sorry, I'm missing a dependency.\n"
                       "  Please install it and try again.", "red"))
         sys.exit(1) # Since we're missing a dependency, just exit.
-    except WindowError:
+    except ValueError:
         print("Please check the IP:DISPLAY you have entered.\n"
                       "Perhaps you need to call 'export DISPLAY=' "
-                      "on your remote machine?")
+                      "on your remote machine?\n\n")
     # Then build the shell command
     cmd =  "key --window " + window + " " + command
 
@@ -243,7 +243,8 @@ def check_requirements():
         check_output("xdpyinfo -display " + display, shell=True,
                 stderr=DEVNULL)
     except CalledProcessError:
-        raise WindowError()
+        trace = 1
+        raise ValueError()
 
 def close(signal):
     # We call this code in a few different spots

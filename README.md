@@ -3,6 +3,11 @@ xDoTool is awesome.  Except for, y'know, having to spell out special characters
 
 0.  Changelog:
   
+  **Version 1.2.1 26th July 2016**
+    
+    * Program now catches problems before going through the 
+        send/subprocess logic
+
   **Version 1.2 26th July 2016**
 
     * Most errors should be handled cleanly
@@ -20,7 +25,7 @@ xDoTool is awesome.  Except for, y'know, having to spell out special characters
     
   **Version 1.1 7th July 2016**
 
-    * Renamed to better_xdotool.py because xdotool_plus doesn't feel right
+    * Renamed to better\_xdotool.py because xdotool\_plus doesn't feel right
     * Terminal colors!  That's right, no more walls of white text (mostly).
     * Basics of exception handling.  KeyboardInterrupt events should be nice and clean,
       but it still needs handling for xdotool events
