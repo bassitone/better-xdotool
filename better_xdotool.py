@@ -1,5 +1,5 @@
 #!/usr/bin/python3.5
-from subprocess import run,check_output,CalledProcessError
+from subprocess import run,check_output,CalledProcessError,DEVNULL
 import os
 import sys
 import re
@@ -51,7 +51,7 @@ def main():
                 if len(window) > 0:
                     again = input("Would you like to send to"
                             " the same window"
-                            "as your previous command?  Type y or n:\n"
+                            " as your previous command?  Type y or n:\n"
                             "Alternatively, you can enter x to quit"
                             " the program\n")
                     if again[0] == "y":
@@ -120,14 +120,19 @@ def main():
                 if verify[0] == "y":
                     cmd = prepare(command)
                     transmission = convert_to_x(cmd)
-                    send(window, transmission)
-                    print(colored("Command sent.  Please check "
-                                  "for your results or any errors.",
-                                  "green"))
-                    repeat = input("\n\nWould you like to send another "
-                                   "command?  Type y or n\n\n")
-                    if repeat[0] =="n":
-                        close("x")
+                    trace = send(window, transmission)
+                    if trace == 0:
+                        print(colored("Command sent.  Please check "
+                                      "for your results or any errors.",
+                                      "green"))
+                        repeat = input("\n\nWould you like to send another "
+                                       "command?  Type y or n\n\n")
+                        if repeat[0] =="n":
+                            close("x")
+                    else:
+                        print(colored("Command NOT sent."
+                                        "  Please try again.", "red",
+                                        attrs=["bold"]))
                 elif verify[0] == "x":
                     close(verify[0])
     except KeyboardInterrupt:
@@ -203,19 +208,27 @@ def send(window, command):
         print(colored("Sorry, I'm missing a dependency.\n"
                       "  Please install it and try again.", "red"))
         sys.exit(1) # Since we're missing a dependency, just exit.
+    except WindowError:
+        
     # Then build the shell command
     cmd =  "key --window " + window + " " + command
 
     #Finally, run it.
-    run("xdotool " + cmd, shell = True)
-
+    try:
+        check_output("xdotool " + cmd, shell = True,
+                stderr=DEVNULL)
+        return 0
+    except CalledProcessError:
+        print(colored("Something went wrong.  Please try sending"
+                        " your command again."))
+        return 1
 # Part of error handling/environment prep.  
 # Should we try to install xdotool if we don't have it?
 
 def check_requirements():
     # Do we have xdotool installed?
     try:
-        run('which xdotool', check=True, shell=True)
+        run('which xdotool', check=True, shell=True, stdout=DEVNULL)
     except CalledProcessError:
         raise RuntimeError("Sorry, xdotool package not found."
          "  Please install it and run this tool again")
@@ -225,11 +238,12 @@ def check_requirements():
             " to make sure I can reach the remote window.\n\nWhat is its IP"            " address and display number?\n"
             " This would usually look something like 192.168.x.x:0\n\n")
     try:
-        check_output("xdpyinfo -display " + display, shell=True)
+        check_output("xdpyinfo -display " + display, shell=True,
+                stderr=DEVNULL)
     except CalledProcessError:
-        print(colored("Please check the IP:DISPLAY you have entered.\n"
-                      "Or perhaps you need to call 'export DISPLAY=' "
-                      "on your remote machine.", "red"))
+        raise WindowError("Please check the IP:DISPLAY you have entered.\n"
+                      "Perhaps you need to call 'export DISPLAY=' "
+                      "on your remote machine?")
 
 def close(signal):
     # We call this code in a few different spots
