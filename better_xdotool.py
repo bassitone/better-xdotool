@@ -13,12 +13,12 @@ def main():
             # TODO: learn how Rapid7 makes those sick 
             #       Metasploit ASCII banners
 
-            print("xdotool, now without annoying syntax.")
-            print((colored("It's better.\n", 'green')))
+            print("Better xDoTool v.1.2.1.  ")
+            print((colored("No more confusing syntax!\n", 'green')))
             print("Originally by Charles Herrera (@bassitone)\n")
             print("GPL v3, Code is as-is, etc. etc.")
             print("You should have already identified an accessible"
-                  " x11 server somehow.\n")
+                  " x11 server somehow.")
             print(colored("########################################"
                           "##############", "red"))
             print(colored("\nOnly use this tool when specifically"
