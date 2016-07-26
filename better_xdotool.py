@@ -74,39 +74,40 @@ def main():
                           "Consult its manpage for "
                           "any necessary parameters")
 
+                window = input("What is the ID of the window"
+                                " you would like to send commands to?\n"
+                                "Either 0x***** form or an integer "
+                                "is fine\nOtherwise, enter x to quit\n")
+                
                 try:
-                    window = input("What is the ID of the window"
-                                   " you would like to send commands to?\n"
-                                   "Either 0x***** form or an integer "
-                                   "is fine\nOtherwise, enter x to quit\n")
+                    if window[0] == "x":
+                        close(window[0])
+                    # Prompt for command to send.
+                    print(colored("Now I'll ask for the command you would like "
+                                  "to send.\n","white",attrs=["underline"]))
+                    print("Normal syntax is fine --"
+                          " we'll handle the conversion.\n")
+                    print(colored("If you need a special key (shift, ctrl, alt,"
+                                  "etc.), type it as written here.\n\n",
+                                  "green"))
+                    print(colored("Alternatively, type 'x' to exit "
+                                  "the program.\n", "yellow"))
+                    print(colored("NOTE: Ctrl+C and similar sequences may not"
+                                  " work correctly\n"
+                                  "      due to limitations in X11 -"
+                                  "BE CAREFUL!", "red"))
+                    command = input(colored("What command would you like "
+                                            "to send to the remote shell?\n\n"
+                                            , "white",
+                                            attrs=["bold", "underline"]))
+                    # Trigger the exit method.  We verify it below
+                    if command == 'x':
+                        close(command)
                 except IndexError:
                     print(colored("Sorry, I need a window ID", "red"))
                     window = input("Please enter it either as an integer or"
                                    "in 0x***** form")
-                if window[0] == "x":
-                    close(window[0])
-                # Prompt for command to send.
-                print(colored("Now I'll ask for the command you would like "
-                              "to send.\n","white",attrs=["underline"]))
-                print("Normal syntax is fine --"
-                      " we'll handle the conversion.\n")
-                print(colored("If you need a special key (shift, ctrl, alt,"
-                              "etc.), type it as written here.\n\n",
-                              "green"))
-                print(colored("Alternatively, type 'x' to exit "
-                              "the program.\n", "yellow"))
-                print(colored("NOTE: Ctrl+C and similar sequences may not"
-                              " work correctly\n"
-                              "      due to limitations in X11 -"
-                              "BE CAREFUL!", "red"))
-                command = input(colored("What command would you like "
-                                        "to send to the remote shell?\n\n"
-                                        , "white",
-                                        attrs=["bold", "underline"]))
-                # Trigger the exit method.  We verify it below
-                if command == 'x':
-                    close(command)
-
+                                   
                 # ask for confirmation.  Shell safely y"all!
                 verify = input("Great, you'd like to send '"
                                 + command + "'?  Type y or n,"
