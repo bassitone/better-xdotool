@@ -107,9 +107,9 @@ def main():
                         if command == 'x':
                             close(command)
                     except IndexError:
-                        print(colored("Sorry, I need a window ID", "red"))
+                        print(colored("Sorry, I need a window ID\n", "red"))
                         window = input("Please enter it either as "
-                                        "an integer or in 0x***** form")
+                                        "an integer or in 0x***** form\n\n")
                 # ask for confirmation.  Shell safely y"all!
                 verify = input("Great, you'd like to send '"
                                 + command + "'?  Type y or n,"
