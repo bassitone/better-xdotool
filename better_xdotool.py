@@ -74,10 +74,15 @@ def main():
                           "Consult its manpage for "
                           "any necessary parameters")
 
-                window = input("What is the ID of the window you would like"
-                               " to send commands to?\n"
-                               "Either 0x***** form or an integer is fine\n"
-                               "Otherwise, enter x to quit\n")
+                try:
+                    window = input("What is the ID of the window"
+                                   " you would like to send commands to?\n"
+                                   "Either 0x***** form or an integer "
+                                   "is fine\nOtherwise, enter x to quit\n")
+                except IndexError:
+                    print(colored("Sorry, I need a window ID", "red"))
+                    window = input("Please enter it either as an integer or"
+                                   "in 0x***** form")
                 if window[0] == "x":
                     close(window[0])
                 # Prompt for command to send.
