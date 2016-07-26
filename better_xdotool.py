@@ -191,9 +191,9 @@ def send(window, command):
     # First, find out if we have what we need on the system we're running on
     try:
         check_requirements()
-    except MissingDependencyError:
-        print(colored("One or more dependencies unsatisfied."
-                      "Exiting.", "red"))
+    except RuntimeError:
+        print(colored("Sorry, I'm missing a dependency.\n"
+                      "  Please install it and try again.", "red"))
         sys.exit(1)
     # Then build the shell command
     cmd =  "key --window " + window + " " + command
@@ -206,13 +206,11 @@ def send(window, command):
 
 def check_requirements():
     # Do we have xdotool installed?
-    path = (os.system("which xdotool"))
-
-    if len(str(path)) < 5:
-        raise MissingDependencyError
-
-    # maybe? assert(len(str(path)) <= 5, "Sorry, xdotool package not found."
-    # "  Please install it and run this tool again.")
+    try:
+        run('which xdotool', check=True, shell=True)
+    except CalledProcessError:
+        raise RuntimeError("Sorry, xdotool package not found."
+         "  Please install it and run this tool again")
 
     # Do we have a valid window to send commands to?
     display = input("Almost ready.  Before I send the command, I'd like"
