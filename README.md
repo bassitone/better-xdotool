@@ -1,5 +1,5 @@
 # better-xdotool
-xDoTool is awesome.  Except for, y'know, having to spell out special characters
+xDoTool is awesome.  Let's make it better!
 
 0.  Changelog:
   
