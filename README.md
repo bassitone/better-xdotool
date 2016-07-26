@@ -3,6 +3,11 @@ xDoTool is awesome.  Except for, y'know, having to spell out special characters
 
 0.  Changelog:
   
+  Version 1.1.2 26th July 2016
+
+    * Added more exception handling, including a clean exit for the case xdotool is not installed
+    * Security enhancements
+
   Version 1.1.1 25th July 2016
 
     * Made the code much more pythonic and easier to read (except for line 135)
