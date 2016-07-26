@@ -209,7 +209,9 @@ def send(window, command):
                       "  Please install it and try again.", "red"))
         sys.exit(1) # Since we're missing a dependency, just exit.
     except WindowError:
-        
+        print("Please check the IP:DISPLAY you have entered.\n"
+                      "Perhaps you need to call 'export DISPLAY=' "
+                      "on your remote machine?")
     # Then build the shell command
     cmd =  "key --window " + window + " " + command
 
@@ -241,9 +243,7 @@ def check_requirements():
         check_output("xdpyinfo -display " + display, shell=True,
                 stderr=DEVNULL)
     except CalledProcessError:
-        raise WindowError("Please check the IP:DISPLAY you have entered.\n"
-                      "Perhaps you need to call 'export DISPLAY=' "
-                      "on your remote machine?")
+        raise WindowError()
 
 def close(signal):
     # We call this code in a few different spots
